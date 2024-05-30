@@ -1,0 +1,519 @@
+{
+  "info": {
+    "name": "Movie Reviews API",
+    "_postman_id": "12345-67890-abcdef",
+    "description": "### Automatically set variables\n\njwt => jwt-token thats created upon sign in\n\nlast_movieID => movieId thats created upon movie handling\n\nlast_reviewID => reviewId thats created upon review handling\n\n### Manually set variables\n\n_(Movie Reviews API => Variables)_\n\nbase_URL => defaultValue: [http://localhost:3000](http://localhost:3000)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"testuser@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/users/register",
+
+          "host": ["{{base_URL}}"],
+          "path": ["users", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/users/login",
+
+          "host": ["{{base_URL}}"],
+          "path": ["users", "login"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.collectionVariables.set(\"jwt\", responseData.token);\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get All Movies",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/movies",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Movie",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Inception\",\n    \"director\": \"Christopher Nolan\",\n    \"releaseYear\": 2010,\n    \"genre\": \"Sci-Fi\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/movies",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.collectionVariables.set(\"last_movieID\", responseData._id);\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Movie by ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/movies/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_movieID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Movie",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Inception\",\n    \"director\": \"Christopher Nolan\",\n    \"releaseYear\": 2010,\n    \"genre\": \"Action\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/movies/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_movieID}}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.collectionVariables.set(\"last_movieID\", responseData._id);\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Movie",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/movies/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_movieID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Reviews for Movie",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/movies/:id/reviews",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies", ":id", "reviews"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_movieID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Reviews",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/reviews",
+
+          "host": ["{{base_URL}}"],
+          "path": ["reviews"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"movieId\": \"{{last_movieID}}\",\n    \"rating\": 5,\n    \"comment\": \"Amazing movie!\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/reviews",
+
+          "host": ["{{base_URL}}"],
+          "path": ["reviews"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.collectionVariables.set(\"last_reviewID\", responseData._id);\r",
+              "    pm.collectionVariables.set(\"last_movieID\", responseData.movieId);\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Review by ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/reviews/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["reviews", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_reviewID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"rating\": 4,\n    \"comment\": \"Great movie!\"\n}"
+        },
+        "url": {
+          "raw": "{{base_URL}}/reviews/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["reviews", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_reviewID}}"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {\r",
+              "    var responseData = pm.response.json();\r",
+              "    pm.collectionVariables.set(\"last_reviewID\", responseData._id);\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/reviews/:id",
+
+          "host": ["{{base_URL}}"],
+          "path": ["reviews", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{last_reviewID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Movies with Ratings",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_URL}}/movies/ratings",
+
+          "host": ["{{base_URL}}"],
+          "path": ["movies", "ratings"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "base_URL",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "last_movieID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_reviewID",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
